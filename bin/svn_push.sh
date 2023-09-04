@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Exit if any command fails.
-set -e
+set -ex
 
 # Define variables
 PLUGIN_SLUG="wc-tinkoff-secure-deal-payment-gateway"   # Replace with your plugin's slug
