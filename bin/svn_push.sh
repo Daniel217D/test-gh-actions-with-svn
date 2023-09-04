@@ -1,41 +1,45 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # Exit if any command fails.
-set -ex
+set -e
 
-# Enable nicer messaging for build status.
-BLUE_BOLD='\033[1;34m';
-GREEN_BOLD='\033[1;32m';
-RED_BOLD='\033[1;31m';
-YELLOW_BOLD='\033[1;33m';
-COLOR_RESET='\033[0m';
-error () {
-    echo -e "\n${RED_BOLD}$1${COLOR_RESET}\n"
-}
-status () {
-    echo -e "\n${BLUE_BOLD}$1${COLOR_RESET}\n"
-}
-success () {
-    echo -e "\n${GREEN_BOLD}$1${COLOR_RESET}\n"
-}
-warning () {
-    echo -e "\n${YELLOW_BOLD}$1${COLOR_RESET}\n"
-}
+# Define variables
+PLUGIN_SLUG="wc-tinkoff-secure-deal-payment-gateway"   # Replace with your plugin's slug
+SVN_REPO="https://plugins.svn.wordpress.org/$PLUGIN_SLUG"
+NEW_TAG="$1"  # The new tag version (passed as a command-line argument)
 
-TAG=$1
+# ENV Переменные
+svn_username="$SVN_USERNAME"
+svn_password="$SVN_PASSWORD"
 
-if [ -z "$TAG" ]
+# Check if the NEW_TAG variable is empty
+if [ -z "$NEW_TAG" ]
 then
-      echo "\$TAG is empty"
+      echo "\$NEW_TAG is empty"
       exit 1
 fi
 
+# Create a ZIP archive of the plugin
+bash ./bin/zip.sh
+
+# Remove the local 'svn' directory if it exists
 rm -rf svn
-svn co https://plugins.svn.wordpress.org/wc-tinkoff-secure-deal-payment-gateway svn
+
+# Check out the WordPress SVN repository for the plugin into the 'svn' directory
+svn co "$SVN_REPO" svn
+
+# Remove the 'trunk' directory from the checked-out repository
 rm -rf svn/trunk
+
+# Copy the contents of the plugin from the 'build' directory to 'svn/trunk'
 cp -r build/wc-tinkoff-secure-deal-payment-gateway svn/trunk
 
+# Change the working directory to the 'svn' directory
 cd svn
-svn cp trunk "tags/$TAG"
-svn ci -m "Publish $TAG github release" --username *** --password ***
+
+# Create a new tag in the SVN repository by copying the contents of 'trunk' to 'tags/$NEW_TAG'
+svn cp trunk "tags/$NEW_TAG"
+
+# Commit the new tag to the SVN repository with a commit message
+svn ci -m "Publish $NEW_TAG github release" --username *** --password ***
 

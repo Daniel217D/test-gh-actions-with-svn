@@ -1,11 +1,13 @@
-name: Release
+name: WordPress Release (SVN)
 run-name: Release
 
-on: 
-  push:
-    tags:
-    - 'v*'
-    
+on:
+  workflow_dispatch:
+    inputs:
+      new_tag:
+        description: 'Enter the new tag version (*.*.*)'
+        required: true
+
 permissions:
   contents: write
 
@@ -15,40 +17,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      # Get composer cache directory
-    -   id:     get-composer-cache-directory
-        name:   Get Composer caches directory path
-        run:    echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-        shell:  bash
-
-      # Mount composer cache directory
-    -   id:     mount-composer-cache-directory
-        name:   Mount composer cache directory
-        uses:   actions/cache@v3
-        with:
-            path:           ${{ steps.get-composer-cache-directory.outputs.dir }}
-            key:            ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-            restore-keys:   ${{ runner.os }}-composer-
-          
-      # Mount composer cache directory
-    -   id:     mount-npm-cache-directory
-        name:   Mount npm cache directory
-        uses:   actions/cache@v3
-        with:
-            path:           node_modules
-            key:            ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-            restore-keys:   ${{ runner.os }}-npm-
-
-    - name: Zip code
-      run: |
-        chmod 777 ./bin/zip.sh
-        sudo bash ./bin/zip.sh
-      shell: bash
-      
-    - uses: ncipollo/release-action@v1
-      with:
-        artifactErrorsFailBuild: true
-        allowUpdates: true
-        artifacts: "./build/wc-tinkoff-secure-deal-payment-gateway.zip"
+      - name: Process
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+        run: |
+          chmod 777 ./bin/svn_release.sh
+          sudo bash ./bin/svn_release.sh ${{ github.event.inputs.new_tag }}
+        shell: bash
