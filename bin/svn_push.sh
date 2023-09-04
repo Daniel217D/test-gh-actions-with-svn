@@ -41,5 +41,5 @@ cd svn
 svn cp trunk "tags/$NEW_TAG"
 
 # Commit the new tag to the SVN repository with a commit message
-svn ci -m "Publish $NEW_TAG github release" --username *** --password ***
+svn ci -m "Publish $NEW_TAG github release" --username "$SVN_USERNAME" --password "$SVN_PASSWORD"
 
