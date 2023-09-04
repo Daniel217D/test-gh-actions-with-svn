@@ -12,9 +12,6 @@ NEW_TAG="$1"  # The new tag version (passed as a command-line argument)
 svn_username="$2"
 svn_password="$3"
 
-echo $svn_username
-echo $svn_password
-exit
 # Check if the NEW_TAG variable is empty
 if [ -z "$NEW_TAG" ]
 then
