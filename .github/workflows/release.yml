@@ -34,8 +34,6 @@ jobs:
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
         # Выдача скрипту всех прав доступа и его запуск
         run: |
-          echo $SVN_USERNAME
-          echo $SVN_PASSWORD
-          echo "$SVN_USERNAME"
-          echo "$SVN_PASSWORD"
+          chmod 777 ./bin/svn_push.sh
+          sudo bash ./bin/svn_push.sh ${{ github.event.inputs.new_tag }} $SVN_USERNAME $SVN_PASSWORD
         shell: bash

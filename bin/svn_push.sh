@@ -9,9 +9,12 @@ SVN_REPO="https://plugins.svn.wordpress.org/$PLUGIN_SLUG"
 NEW_TAG="$1"  # The new tag version (passed as a command-line argument)
 
 # ENV Переменные
-svn_username="$SVN_USERNAME"
-svn_password="$SVN_PASSWORD"
+svn_username="$2"
+svn_password="$3"
 
+echo $svn_username
+echo $svn_password
+exit
 # Check if the NEW_TAG variable is empty
 if [ -z "$NEW_TAG" ]
 then
@@ -41,5 +44,5 @@ cd svn
 svn cp trunk "tags/$NEW_TAG"
 
 # Commit the new tag to the SVN repository with a commit message
-svn ci -m "Publish $NEW_TAG github release" --username "$SVN_USERNAME" --password "$SVN_PASSWORD"
+svn ci -m "Publish $NEW_TAG github release" --username "$svn_username" --password "$svn_password"
 
