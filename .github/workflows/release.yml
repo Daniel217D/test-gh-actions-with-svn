@@ -1,9 +1,14 @@
+# Имя скрипта
 name: WordPress Release (SVN)
 run-name: Release
 
+# Событие вызова
 on:
+  # Ручной вызов
   workflow_dispatch:
+    # Входные переменные
     inputs:
+      # Одна переменная new tag, которая будет доступна в bash скрипте
       new_tag:
         description: 'Enter the new tag version (*.*.*)'
         required: true
@@ -14,16 +19,21 @@ permissions:
 jobs:
   build:
 
+    # Код будет запускаться на последней версии ubuntu
     runs-on: ubuntu-latest
 
     steps:
+      # Стандартный скрипт github actions для клонирования репозитория в среду выполнения
       - uses: actions/checkout@v3
 
+      # Запуск скрипта публикации
       - name: Process
         env:
+          # Получение переменных из настроек сервера
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+        # Выдача скрипту всех прав доступа и его запуск
         run: |
-          chmod 777 ./bin/svn_release.sh
-          sudo bash ./bin/svn_release.sh ${{ github.event.inputs.new_tag }}
+          chmod 777 ./bin/svn_push.sh
+          sudo bash ./bin/svn_push.sh ${{ github.event.inputs.new_tag }}
         shell: bash
