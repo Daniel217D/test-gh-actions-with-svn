@@ -34,6 +34,8 @@ jobs:
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
         # Выдача скрипту всех прав доступа и его запуск
         run: |
-          echo SVN_USERNAME
-          echo SVN_PASSWORD
+          echo $SVN_USERNAME
+          echo $SVN_PASSWORD
+          echo "$SVN_USERNAME"
+          echo "$SVN_PASSWORD"
         shell: bash
